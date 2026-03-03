@@ -1,0 +1,33 @@
+{
+  "name": "test_task_qa_elementor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "allure:serve": "allure serve allure-results"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/issues"
+  },
+  "homepage": "https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "allure-playwright": "^3.5.0",
+    "dotenv": "^17.3.1",
+    "typescript": "^5.9.3"
+  }
+}

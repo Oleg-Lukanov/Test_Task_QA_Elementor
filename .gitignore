@@ -137,3 +137,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Playwright
+playwright-report/
+allure-results/
+allure-report/
+test-results/
+screenshots/
+!screenshots/.gitkeep
+scripts/
