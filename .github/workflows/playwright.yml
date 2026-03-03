@@ -8,6 +8,10 @@ on:
         required: false
         default: 'all'
 
+# Required for peaceiris/actions-gh-pages to push to gh-pages branch
+permissions:
+  contents: write
+
 jobs:
   test:
     name: Run Playwright Tests
@@ -41,6 +45,31 @@ jobs:
             npx playwright test --project="${{ github.event.inputs.browser }}"
           fi
 
+      # ── Restore previous Allure history (enables trend charts) ────────────
+      - name: Fetch Allure history from gh-pages
+        if: always()
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-history
+        continue-on-error: true   # gh-pages branch won't exist on the first run
+
+      - name: Copy history into allure-results
+        if: always()
+        run: |
+          if [ -d gh-pages-history/history ]; then
+            cp -r gh-pages-history/history/. allure-results/history/
+            echo "Allure history restored."
+          else
+            echo "No previous history found — first run, skipping."
+          fi
+
+      # ── Generate Allure HTML report ───────────────────────────────────────
+      - name: Generate Allure HTML report
+        if: always()
+        run: npx allure generate allure-results --clean -o allure-report
+
+      # ── Artifacts ─────────────────────────────────────────────────────────
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,3 +94,12 @@ jobs:
           path: screenshots/
           if-no-files-found: ignore
           retention-days: 14
+
+      # ── Publish Allure report to GitHub Pages ─────────────────────────────
+      - name: Deploy Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report

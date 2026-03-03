@@ -1,5 +1,10 @@
 # Playwright Form Tests — Elementor Contact Form
 
+[![Playwright Tests](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/playwright.yml/badge.svg)](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/playwright.yml)
+[![Allure Report](https://img.shields.io/badge/Allure-Report-brightgreen)](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
+
+> 📊 **Live Allure Report:** [https://oleg-lukanov.github.io/Test_Task_QA_Elementor/](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
+
 Automated end-to-end tests for the contact form at
 [https://wtfqsbkm.elementor.cloud/elementor-36/](https://wtfqsbkm.elementor.cloud/elementor-36/)
 written with **Playwright** and **TypeScript**.
@@ -114,6 +119,8 @@ The workflow is triggered **manually** from the Actions tab:
 
 After the run:
 - Test results are annotated directly in the run summary (GitHub reporter)
+- The **Allure HTML report** is published to **GitHub Pages** and updated after every run (includes historical trend data):
+  👉 [https://oleg-lukanov.github.io/Test_Task_QA_Elementor/](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
 - The **Playwright HTML report** is available as a downloadable artifact (`playwright-report`)
 - **Allure results** are available as a downloadable artifact (`allure-results`)
 - Error **screenshots** are available as a downloadable artifact (`screenshots`)
