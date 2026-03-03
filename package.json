@@ -26,6 +26,7 @@
   "homepage": "https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor#readme",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.3",
     "allure-playwright": "^3.5.0",
     "dotenv": "^17.3.1",
     "typescript": "^5.9.3"
