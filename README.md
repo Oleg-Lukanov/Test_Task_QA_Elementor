@@ -57,16 +57,19 @@ written with **Playwright** and **TypeScript**.
 git clone https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor.git
 cd Test_Task_QA_Elementor
 
-# 2. Install Node dependencies
-npm ci
+# 2. Install dependencies + browsers (postinstall installs Chromium & Firefox automatically)
+npm install
 
-# 3. Install Playwright browsers
-npx playwright install --with-deps
-
-# 4. Copy environment config
+# 3. Copy environment config
 cp .env.example .env
 # (optionally edit BASE_URL inside .env)
 ```
+
+> **WebKit note:** WebKit requires macOS 13+ and is not installed locally by `npm install`.
+> It runs automatically in CI (ubuntu-latest). To run WebKit locally on a supported OS:
+> ```bash
+> npx playwright install webkit
+> ```
 
 ---
 
@@ -99,11 +102,18 @@ npm run report
 # Opens http://localhost:9323 in your browser
 ```
 
-### Allure report (requires Allure CLI)
-```bash
-# Install Allure CLI once (requires Java)
-npm install -g allure-commandline
+### Allure report
 
+> `allure-commandline` is a dev dependency — no global install needed.
+
+```bash
+# Generate static HTML from the last run's raw results
+npm run allure:generate
+
+# Open the generated report in your browser
+npm run allure:open
+
+# Or generate + serve with live reload in one step
 npm run allure:serve
 ```
 
