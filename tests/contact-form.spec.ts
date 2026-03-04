@@ -65,13 +65,11 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
     await contactFormPage.fillForm(formData);
     await contactFormPage.submit();
 
-    // ── Wait for Elementor to render the error state ─────────────────────
+    // ── UI assertions — wait for full error state before screenshotting ────
     await expect(contactFormPage.errorMessage).toBeVisible();
-
-    // ── Screenshot — saved to /screenshots and attached to both reports ────
-    await contactFormPage.takeScreenshot('error-500-screenshot', testInfo);
-
-    // ── UI assertion ───────────────────────────────────────────────────────
     await expect(contactFormPage.errorMessage).toContainText('error');
+
+    // ── Screenshot after error UI confirmed — attached to Playwright & Allure reports ──
+    await contactFormPage.takeScreenshot('error-500-screenshot', testInfo);
   });
 });
