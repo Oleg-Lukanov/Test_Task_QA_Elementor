@@ -20,6 +20,11 @@ export default defineConfig({
     ...(process.env.CI ? [['github'] as ['github']] : []),
   ],
 
+  // Remove {platform} from the snapshot path so the same baseline PNG is used
+  // on both macOS (local) and Linux (CI).  The browser engine renders HTML/CSS
+  // identically across platforms, so cross-OS pixel drift is negligible.
+  snapshotPathTemplate: '{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
+
   use: {
     baseURL: BASE_URL,
     screenshot: 'only-on-failure',
