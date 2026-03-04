@@ -1,8 +1,8 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
+import { BasePage } from './BasePage';
+import type { FormFields } from '../types';
 
-export class ContactFormPage {
-  readonly page: Page;
-
+export class ContactFormPage extends BasePage {
   readonly nameField: Locator;
   readonly emailField: Locator;
   readonly messageField: Locator;
@@ -11,21 +11,21 @@ export class ContactFormPage {
   readonly errorMessage: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
 
-    this.nameField = page.locator('#form-field-name');
-    this.emailField = page.locator('#form-field-email');
-    this.messageField = page.locator('#form-field-message');
+    this.nameField = this.page.locator('#form-field-name');
+    this.emailField = this.page.locator('#form-field-email');
+    this.messageField = this.page.locator('#form-field-message');
 
-    this.submitButton = page.getByRole('button', { name: 'Send' });
+    this.submitButton = this.page.getByRole('button', { name: 'Send' });
 
-    this.successMessage = page
+    this.successMessage = this.page
       .getByRole('alert')
-      .and(page.locator('.elementor-message-success'));
+      .and(this.page.locator('.elementor-message-success'));
 
-    this.errorMessage = page
+    this.errorMessage = this.page
       .getByRole('alert')
-      .and(page.locator('.elementor-message-danger'));
+      .and(this.page.locator('.elementor-message-danger'));
   }
 
   /** Navigate to the contact-form page and wait until the form is visible. */
@@ -49,11 +49,11 @@ export class ContactFormPage {
     await this.messageField.fill(message);
   }
 
-  /** Fill all three form fields by delegating to the individual fill methods. */
-  async fillForm(name: string, email: string, message: string): Promise<void> {
-    await this.fillName(name);
-    await this.fillEmail(email);
-    await this.fillMessage(message);
+  /** Fill all three form fields from a typed FormFields object. */
+  async fillForm(data: FormFields): Promise<void> {
+    await this.fillName(data.name);
+    await this.fillEmail(data.email);
+    await this.fillMessage(data.message);
   }
 
   /** Click the Submit button. */
