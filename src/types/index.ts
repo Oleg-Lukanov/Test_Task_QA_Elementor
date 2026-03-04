@@ -1,11 +1,9 @@
-/** Typed fields for the Elementor contact form. */
 export interface ContactFormFields {
   name: string;
   email: string;
   message: string;
 }
 
-/** HTTP status codes used in mocks and assertions. */
 export const STATUS_CODES = {
   OK: 200,
   CREATED: 201,

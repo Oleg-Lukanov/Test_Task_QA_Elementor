@@ -4,10 +4,6 @@ import { AJAX_GLOB } from '../constants';
 import { STATUS_CODES } from '../types';
 import type { ContactFormFields } from '../types';
 
-// ---------------------------------------------------------------------------
-// Scenario 1 – Happy Path (real network request)
-// ---------------------------------------------------------------------------
-
 test.describe('Contact Form – Happy Path', () => {
   test.beforeEach(async ({ contactFormPage }) => {
     await contactFormPage.goto();
@@ -25,24 +21,17 @@ test.describe('Contact Form – Happy Path', () => {
 
     await contactFormPage.fillForm(formData);
 
-    // Capture the AJAX response while clicking submit
     const [response] = await Promise.all([
       page.waitForResponse(AJAX_GLOB),
       contactFormPage.submit(),
     ]);
 
-    // ── Network assertion ──────────────────────────────────────────────────────
     expect(response.status()).toBe(STATUS_CODES.OK);
 
-    // ── UI assertion ───────────────────────────────────────────────────────
     await expect(contactFormPage.successMessage).toBeVisible();
     await expect(contactFormPage.successMessage).toContainText('Your submission was successful.');
   });
 });
-
-// ---------------------------------------------------------------------------
-// Scenario 2 – Network Mocking (500 Internal Server Error)
-// ---------------------------------------------------------------------------
 
 test.describe('Contact Form – Network Error (Mocked 500)', () => {
   test.beforeEach(async ({ contactFormPage }) => {
@@ -67,11 +56,9 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
     await contactFormPage.fillForm(formData);
     await contactFormPage.submit();
 
-    // ── UI assertions — wait for full error state before screenshotting ────
     await expect(contactFormPage.errorMessage).toBeVisible();
     await expect(contactFormPage.errorMessage).toContainText('error');
 
-    // ── Visual snapshot — baseline in __snapshots__, diff in Playwright HTML, image in Allure ──
     await contactFormPage.takeSnapshot('error-500-snapshot', testInfo);
   });
 });

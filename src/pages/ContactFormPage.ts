@@ -21,7 +21,6 @@ export class ContactFormPage extends BasePage {
     await this.nameField.waitFor({ state: 'visible' });
   }
 
-  /** Fill only the fields present in the partial data object. */
   async fillForm(data: Partial<ContactFormFields>): Promise<void> {
     if (data.name !== undefined) await this.nameField.fill(data.name);
     if (data.email !== undefined) await this.emailField.fill(data.email);
