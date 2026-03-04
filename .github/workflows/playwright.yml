@@ -34,19 +34,27 @@ jobs:
         # --ignore-scripts skips postinstall so we control browser install below
         run: npm ci --ignore-scripts
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
-
-      - name: Run Playwright tests
+      # ── Run tests inside the official Playwright Docker image ─────────────
+      # Using docker run (not container: on the job) so that all other steps
+      # — allure generate, peaceiris/actions-gh-pages — run on the host runner
+      # without Docker-in-Docker issues.
+      - name: Run Playwright tests (Docker)
         env:
-          CI: 'true'
           BASE_URL: ${{ vars.BASE_URL || 'https://wtfqsbkm.elementor.cloud' }}
         run: |
-          if [ "${{ github.event.inputs.browser }}" = "all" ] || [ -z "${{ github.event.inputs.browser }}" ]; then
-            npx playwright test
+          PROJECTS=""
+          if [ "${{ github.event.inputs.browser }}" != "all" ] && [ -n "${{ github.event.inputs.browser }}" ]; then
+            PROJECTS="--project=${{ github.event.inputs.browser }}"
           else
-            npx playwright test --project="${{ github.event.inputs.browser }}"
+            PROJECTS="--project=chromium --project=firefox"
           fi
+          docker run --rm \
+            -v "${{ github.workspace }}:/app" \
+            -w /app \
+            -e CI=true \
+            -e BASE_URL="${BASE_URL}" \
+            mcr.microsoft.com/playwright:v1.58.2-noble \
+            sh -c "npm ci --ignore-scripts && npx playwright test ${PROJECTS}"
 
       # ── JUnit inline pass/fail summary in Actions run ─────────────────────
       - name: Upload test results (JUnit XML)
