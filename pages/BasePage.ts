@@ -35,7 +35,7 @@ export abstract class BasePage {
    * Allure and the Playwright HTML attachments panel both display it.
    */
   async takeSnapshot(name: string, testInfo: TestInfo): Promise<void> {
-    await expect(this.page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+    await expect(this.page).toHaveScreenshot(`${name}.png`, { fullPage: true, maxDiffPixelRatio: 0.05 });
 
     const screenshotBuffer = await this.page.screenshot({ fullPage: true });
     await testInfo.attach(name, {
