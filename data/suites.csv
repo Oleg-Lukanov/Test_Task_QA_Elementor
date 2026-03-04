@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","6122","submits the form successfully and shows a success message","webkit","2026-03-04","passed","2026-03-04","Contact Form – Happy Path","contact-form.spec.ts","",""
+"","3143","submits the form successfully and shows a success message","chromium","2026-03-04","passed","2026-03-04","Contact Form – Happy Path","contact-form.spec.ts","",""
+"","1175","shows an error notification when the server returns 500","firefox","2026-03-04","passed","2026-03-04","Contact Form – Network Error (Mocked 500)","contact-form.spec.ts","",""
+"","1519","shows an error notification when the server returns 500","webkit","2026-03-04","passed","2026-03-04","Contact Form – Network Error (Mocked 500)","contact-form.spec.ts","",""
+"","818","shows an error notification when the server returns 500","chromium","2026-03-04","passed","2026-03-04","Contact Form – Network Error (Mocked 500)","contact-form.spec.ts","",""
+"","4849","submits the form successfully and shows a success message","firefox","2026-03-04","passed","2026-03-04","Contact Form – Happy Path","contact-form.spec.ts","",""
