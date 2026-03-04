@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { type Page, type TestInfo } from '@playwright/test';
+import { expect, type Page, type TestInfo } from '@playwright/test';
 import { SCREENSHOTS_DIR } from '../constants';
 
 export abstract class BasePage {
@@ -21,6 +21,23 @@ export abstract class BasePage {
       fullPage: true,
     });
 
+    await testInfo.attach(name, {
+      body: screenshotBuffer,
+      contentType: 'image/png',
+    });
+  }
+
+  /**
+   * Visual snapshot assertion using toHaveScreenshot.
+   * First run: creates baseline in tests/__snapshots__.
+   * Subsequent runs: pixel-diffs against baseline; any diff is surfaced in the
+   * Playwright HTML report. The screenshot is also attached to testInfo so that
+   * Allure and the Playwright HTML attachments panel both display it.
+   */
+  async takeSnapshot(name: string, testInfo: TestInfo): Promise<void> {
+    await expect(this.page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+
+    const screenshotBuffer = await this.page.screenshot({ fullPage: true });
     await testInfo.attach(name, {
       body: screenshotBuffer,
       contentType: 'image/png',

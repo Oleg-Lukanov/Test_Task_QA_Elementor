@@ -69,7 +69,7 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
     await expect(contactFormPage.errorMessage).toBeVisible();
     await expect(contactFormPage.errorMessage).toContainText('error');
 
-    // ── Screenshot after error UI confirmed — attached to Playwright & Allure reports ──
-    await contactFormPage.takeScreenshot('error-500-screenshot', testInfo);
+    // ── Visual snapshot — baseline in __snapshots__, diff in Playwright HTML, image in Allure ──
+    await contactFormPage.takeSnapshot('error-500-snapshot', testInfo);
   });
 });
