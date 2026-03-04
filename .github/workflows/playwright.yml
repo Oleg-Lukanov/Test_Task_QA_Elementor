@@ -123,7 +123,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: screenshots/
+          path: src/screenshots/
           if-no-files-found: ignore
           retention-days: 14
 

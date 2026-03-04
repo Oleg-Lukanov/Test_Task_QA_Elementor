@@ -143,9 +143,8 @@ playwright-report/
 allure-results/
 allure-report/
 test-results/
-screenshots/
-!screenshots/.gitkeep
 scripts/
 
-# Screenshot artifacts
-src/screenshots/
+# Runtime screenshot artifacts (directory tracked via .gitkeep, contents ignored)
+src/screenshots/*
+!src/screenshots/.gitkeep

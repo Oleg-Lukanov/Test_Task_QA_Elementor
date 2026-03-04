@@ -1,6 +1,7 @@
 # Playwright Form Tests — Elementor Contact Form
 
 [![Playwright Tests](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/playwright.yml/badge.svg)](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/playwright.yml)
+[![Quality Gate](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/quality.yml/badge.svg)](https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor/actions/workflows/quality.yml)
 [![Allure Report](https://img.shields.io/badge/Allure-Report-brightgreen)](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
 
 > 📊 **Live Allure Report:** [https://oleg-lukanov.github.io/Test_Task_QA_Elementor/](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
@@ -24,17 +25,31 @@ written with **Playwright** and **TypeScript**.
 
 ```
 .
-├── fixtures/
-│   └── base.fixture.ts      # Custom Playwright fixture (ContactFormPage)
-├── pages/
-│   └── ContactFormPage.ts   # Page Object Model for the contact form
-├── tests/
-│   └── contact-form.spec.ts # Test scenarios
-├── screenshots/             # Error screenshots generated at runtime
-├── .env.example             # Environment variable template
-├── playwright.config.ts     # Playwright configuration
+├── src/
+│   ├── constants/
+│   │   └── index.ts              # Shared string constants (AJAX_GLOB, SCREENSHOTS_DIR)
+│   ├── types/
+│   │   └── index.ts              # Shared TS types (ContactFormFields, STATUS_CODES)
+│   ├── pages/
+│   │   ├── BasePage.ts           # Abstract base class: takeScreenshot, takeSnapshot
+│   │   └── ContactFormPage.ts    # Page Object Model for the contact form
+│   ├── mocks/
+│   │   └── AjaxMock.ts           # Network interception helper (mockResponse<T>)
+│   ├── fixtures/
+│   │   └── base.fixture.ts       # Custom Playwright fixtures (test, expect)
+│   ├── tests/
+│   │   ├── contact-form.spec.ts  # Test scenarios
+│   │   └── contact-form.spec.ts-snapshots/  # Visual regression baselines (Docker-generated)
+│   └── screenshots/              # Runtime error screenshots (gitignored, dir tracked via .gitkeep)
+├── docker-compose.yml            # Docker config for pixel-identical snapshot generation
+├── playwright.config.ts          # Playwright configuration
+├── eslint.config.js              # ESLint v9 flat config (typescript-eslint + playwright)
+├── .prettierrc                   # Prettier configuration
+├── .husky/
+│   └── pre-commit                # Husky pre-commit hook (runs lint-staged)
 └── .github/workflows/
-    └── playwright.yml       # GitHub Actions CI workflow
+    ├── playwright.yml            # CI: run tests in Docker, publish Allure to GitHub Pages
+    └── quality.yml               # PR gate: tsc --noEmit, eslint, prettier --check
 ```
 
 ---
@@ -43,10 +58,7 @@ written with **Playwright** and **TypeScript**.
 
 - **Node.js** ≥ 18
 - **npm** ≥ 9
-
-> **Note (macOS):** WebKit requires macOS 13 (Ventura) or later.
-> On older systems run only Chromium/Firefox: `npm run test:chromium`.
-> WebKit runs normally in the GitHub Actions CI (ubuntu-latest).
+- **Docker** (required for regenerating visual regression baselines)
 
 ---
 
@@ -57,26 +69,18 @@ written with **Playwright** and **TypeScript**.
 git clone https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor.git
 cd Test_Task_QA_Elementor
 
-# 2. Install dependencies + browsers (postinstall installs Chromium & Firefox automatically)
+# 2. Install dependencies (postinstall installs Chromium & Firefox automatically)
 npm install
 
-# 3. Copy environment config
+# 3. Copy environment config (optional — defaults to the live site)
 cp .env.example .env
-# (optionally edit BASE_URL inside .env)
 ```
-
-> **WebKit note:** WebKit requires macOS 13+ and is not installed locally by `npm install`.
-> It runs automatically in CI (ubuntu-latest). To run WebKit locally on a supported OS:
->
-> ```bash
-> npx playwright install webkit
-> ```
 
 ---
 
 ## Running Tests
 
-### All browsers
+### All browsers (local Playwright install)
 
 ```bash
 npm test
@@ -87,13 +91,60 @@ npm test
 ```bash
 npm run test:chromium
 npm run test:firefox
-npm run test:webkit
+```
+
+### Inside Docker (pixel-identical to CI)
+
+Running tests inside the official Playwright Docker image guarantees that
+`toHaveScreenshot` baselines match exactly what GitHub Actions produces.
+
+```bash
+npm run test:docker
 ```
 
 ### Interactive UI mode
 
 ```bash
 npm run test:ui
+```
+
+---
+
+## Visual Regression Snapshots
+
+Baseline PNGs live in `src/tests/contact-form.spec.ts-snapshots/` and are
+committed to the repo. They are generated **inside Docker** to be pixel-identical
+to the Linux CI environment.
+
+To regenerate baselines after intentional UI changes:
+
+```bash
+npm run test:docker:update-snapshots
+```
+
+The `snapshotPathTemplate` in `playwright.config.ts` omits `{platform}`, so a
+single PNG per browser works on both macOS (local) and Linux (CI).
+
+---
+
+## Code Quality
+
+| Tool            | Purpose                                                                          |
+| --------------- | -------------------------------------------------------------------------------- |
+| **TypeScript**  | Strict type checking (`tsc --noEmit`)                                            |
+| **ESLint**      | Linting with `typescript-eslint` + `eslint-plugin-playwright`                    |
+| **Prettier**    | Consistent code formatting                                                       |
+| **Husky**       | Git hooks — pre-commit runs lint-staged                                          |
+| **lint-staged** | On commit: prettier + eslint --fix on `*.ts`; prettier on `*.{json,md,yml,yaml}` |
+
+### Manual quality commands
+
+```bash
+npm run typecheck       # tsc --noEmit
+npm run lint            # eslint .
+npm run lint:fix        # eslint . --fix
+npm run format          # prettier --write .
+npm run format:check    # prettier --check .
 ```
 
 ---
@@ -108,8 +159,6 @@ npm run report
 ```
 
 ### Allure report
-
-> `allure-commandline` is a dev dependency — no global install needed.
 
 ```bash
 # Generate static HTML from the last run's raw results
@@ -126,20 +175,28 @@ npm run allure:serve
 
 ## CI – GitHub Actions
 
-The workflow is triggered **manually** from the Actions tab:
+### `playwright.yml` — Test runner (manual trigger)
 
 1. Go to **Actions → Playwright Tests → Run workflow**
-2. (Optional) choose a specific browser: `chromium`, `firefox`, `webkit`, or `all` (default)
+2. (Optional) choose a browser: `chromium`, `firefox`, or `all` (default)
 3. Click **Run workflow**
 
-After the run:
+Tests run inside `mcr.microsoft.com/playwright:v1.58.2-noble` for deterministic
+snapshots. After the run:
 
-- Test results are annotated directly in the run summary (GitHub reporter)
-- The **Allure HTML report** is published to **GitHub Pages** and updated after every run (includes historical trend data):
+- **Allure HTML report** is published to **GitHub Pages** with historical trend data:
   👉 [https://oleg-lukanov.github.io/Test_Task_QA_Elementor/](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
-- The **Playwright HTML report** is available as a downloadable artifact (`playwright-report`)
-- **Allure results** are available as a downloadable artifact (`allure-results`)
-- Error **screenshots** are available as a downloadable artifact (`screenshots`)
+- **Playwright HTML report** — downloadable artifact (`playwright-report`)
+- **Allure results** — downloadable artifact (`allure-results`)
+- **Error screenshots** — downloadable artifact (`screenshots`)
+
+### `quality.yml` — PR gate (automatic on every pull request)
+
+Runs on every pull request to any branch:
+
+1. `tsc --noEmit` — TypeScript compilation check
+2. `eslint .` — linting
+3. `prettier --check .` — formatting check
 
 ---
 
