@@ -79,6 +79,7 @@ jobs:
         if: always()
         run: |
           if [ -d gh-pages-history/history ]; then
+            mkdir -p allure-results/history
             cp -r gh-pages-history/history/. allure-results/history/
             echo "Allure history restored."
           else

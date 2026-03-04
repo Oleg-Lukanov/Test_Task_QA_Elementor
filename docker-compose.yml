@@ -8,4 +8,4 @@ services:
     environment:
       - CI=true
       - BASE_URL=https://wtfqsbkm.elementor.cloud
-    command: npx playwright test --project=chromium --project=firefox
+    command: sh -c "npm ci --ignore-scripts && npx playwright test --project=chromium --project=firefox"

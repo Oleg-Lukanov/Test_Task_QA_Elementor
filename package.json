@@ -10,7 +10,7 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:docker": "docker compose run --rm playwright",
-    "test:docker:update-snapshots": "docker compose run --rm playwright npx playwright test --update-snapshots --project=chromium --project=firefox",
+    "test:docker:update-snapshots": "docker compose run --rm playwright sh -c 'npm ci --ignore-scripts && npx playwright test --update-snapshots --project=chromium --project=firefox'",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
