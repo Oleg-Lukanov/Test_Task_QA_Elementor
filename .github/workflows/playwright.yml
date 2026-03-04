@@ -34,10 +34,18 @@ jobs:
         # --ignore-scripts skips postinstall so we control browser install below
         run: npm ci --ignore-scripts
 
+      # Pre-create allure-results/ as the runner user BEFORE Docker runs.
+      # Docker (root) can still write inside it, but the directory itself stays
+      # runner-owned so later host-side mkdir/cp steps succeed without errors.
+      - name: Pre-create allure-results directory
+        run: mkdir -p allure-results
+
       # ── Run tests inside the official Playwright Docker image ─────────────
       # Using docker run (not container: on the job) so that all other steps
       # — allure generate, peaceiris/actions-gh-pages — run on the host runner
       # without Docker-in-Docker issues.
+      # --user $(id -u):$(id -g) makes the container write files as the runner
+      # UID so all output directories remain runner-owned.
       - name: Run Playwright tests (Docker)
         env:
           BASE_URL: ${{ vars.BASE_URL || 'https://wtfqsbkm.elementor.cloud' }}
@@ -49,10 +57,12 @@ jobs:
             PROJECTS="--project=chromium --project=firefox"
           fi
           docker run --rm \
+            --user "$(id -u):$(id -g)" \
             -v "${{ github.workspace }}:/app" \
             -w /app \
             -e CI=true \
             -e BASE_URL="${BASE_URL}" \
+            -e HOME=/tmp \
             mcr.microsoft.com/playwright:v1.58.2-noble \
             sh -c "npm ci --ignore-scripts && npx playwright test ${PROJECTS}"
 
