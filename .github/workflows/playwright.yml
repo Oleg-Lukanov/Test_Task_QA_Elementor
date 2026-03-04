@@ -83,7 +83,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages-history
-        continue-on-error: true   # gh-pages branch won't exist on the first run
+        continue-on-error: true # gh-pages branch won't exist on the first run
 
       - name: Copy history into allure-results
         if: always()

@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { test, expect } from '../src/fixtures/base.fixture';
-import { AJAX_GLOB } from '../src/constants';
-import { STATUS_CODES } from '../src/types';
-import type { ContactFormFields } from '../src/types';
+import { test, expect } from '../fixtures/base.fixture';
+import { AJAX_GLOB } from '../constants';
+import { STATUS_CODES } from '../types';
+import type { ContactFormFields } from '../types';
 
 // ---------------------------------------------------------------------------
 // Scenario 1 – Happy Path (real network request)
@@ -36,9 +36,7 @@ test.describe('Contact Form – Happy Path', () => {
 
     // ── UI assertion ───────────────────────────────────────────────────────
     await expect(contactFormPage.successMessage).toBeVisible();
-    await expect(contactFormPage.successMessage).toContainText(
-      'Your submission was successful.',
-    );
+    await expect(contactFormPage.successMessage).toContainText('Your submission was successful.');
   });
 });
 
@@ -56,7 +54,7 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
     ajaxMock,
   }, testInfo) => {
     await ajaxMock.mockResponse({
-      body:   { success: false },
+      body: { success: false },
       status: STATUS_CODES.INTERNAL_SERVER_ERROR,
     });
 

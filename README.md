@@ -13,10 +13,10 @@ written with **Playwright** and **TypeScript**.
 
 ## Test Scenarios
 
-| # | Name | Description |
-|---|------|-------------|
-| 1 | Happy Path | Submits the form with valid data, asserts HTTP 200 and a success banner |
-| 2 | Network Mock – 500 | Intercepts the AJAX request, returns 500, asserts an error banner and saves a screenshot |
+| #   | Name               | Description                                                                              |
+| --- | ------------------ | ---------------------------------------------------------------------------------------- |
+| 1   | Happy Path         | Submits the form with valid data, asserts HTTP 200 and a success banner                  |
+| 2   | Network Mock – 500 | Intercepts the AJAX request, returns 500, asserts an error banner and saves a screenshot |
 
 ---
 
@@ -67,6 +67,7 @@ cp .env.example .env
 
 > **WebKit note:** WebKit requires macOS 13+ and is not installed locally by `npm install`.
 > It runs automatically in CI (ubuntu-latest). To run WebKit locally on a supported OS:
+>
 > ```bash
 > npx playwright install webkit
 > ```
@@ -76,11 +77,13 @@ cp .env.example .env
 ## Running Tests
 
 ### All browsers
+
 ```bash
 npm test
 ```
 
 ### Single browser
+
 ```bash
 npm run test:chromium
 npm run test:firefox
@@ -88,6 +91,7 @@ npm run test:webkit
 ```
 
 ### Interactive UI mode
+
 ```bash
 npm run test:ui
 ```
@@ -97,6 +101,7 @@ npm run test:ui
 ## Viewing Reports
 
 ### Playwright HTML report
+
 ```bash
 npm run report
 # Opens http://localhost:9323 in your browser
@@ -128,6 +133,7 @@ The workflow is triggered **manually** from the Actions tab:
 3. Click **Run workflow**
 
 After the run:
+
 - Test results are annotated directly in the run summary (GitHub reporter)
 - The **Allure HTML report** is published to **GitHub Pages** and updated after every run (includes historical trend data):
   👉 [https://oleg-lukanov.github.io/Test_Task_QA_Elementor/](https://oleg-lukanov.github.io/Test_Task_QA_Elementor/)
@@ -139,8 +145,8 @@ After the run:
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable   | Default                            | Description                     |
+| ---------- | ---------------------------------- | ------------------------------- |
 | `BASE_URL` | `https://wtfqsbkm.elementor.cloud` | Base URL of the site under test |
 
 Set in `.env` locally or as a [repository variable](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables) (`vars.BASE_URL`) in GitHub Actions.

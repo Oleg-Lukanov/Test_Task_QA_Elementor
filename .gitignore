@@ -146,3 +146,6 @@ test-results/
 screenshots/
 !screenshots/.gitkeep
 scripts/
+
+# Screenshot artifacts
+src/screenshots/

@@ -3,8 +3,8 @@ import { BasePage } from './BasePage';
 import type { ContactFormFields } from '../types';
 
 export class ContactFormPage extends BasePage {
-  readonly nameField: Locator    = this.page.locator('#form-field-name');
-  readonly emailField: Locator   = this.page.locator('#form-field-email');
+  readonly nameField: Locator = this.page.locator('#form-field-name');
+  readonly emailField: Locator = this.page.locator('#form-field-email');
   readonly messageField: Locator = this.page.locator('#form-field-message');
   readonly submitButton: Locator = this.page.getByRole('button', { name: 'Send' });
 
@@ -23,8 +23,8 @@ export class ContactFormPage extends BasePage {
 
   /** Fill only the fields present in the partial data object. */
   async fillForm(data: Partial<ContactFormFields>): Promise<void> {
-    if (data.name    !== undefined) await this.nameField.fill(data.name);
-    if (data.email   !== undefined) await this.emailField.fill(data.email);
+    if (data.name !== undefined) await this.nameField.fill(data.name);
+    if (data.email !== undefined) await this.emailField.fill(data.email);
     if (data.message !== undefined) await this.messageField.fill(data.message);
   }
 

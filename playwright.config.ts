@@ -4,7 +4,7 @@ import 'dotenv/config';
 const BASE_URL = process.env.BASE_URL ?? 'https://wtfqsbkm.elementor.cloud';
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: './src/tests',
   timeout: 30_000,
   expect: { timeout: 10_000 },
 
@@ -23,7 +23,8 @@ export default defineConfig({
   // Remove {platform} from the snapshot path so the same baseline PNG is used
   // on both macOS (local) and Linux (CI).  The browser engine renders HTML/CSS
   // identically across platforms, so cross-OS pixel drift is negligible.
-  snapshotPathTemplate: '{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
+  snapshotPathTemplate:
+    '{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
 
   use: {
     baseURL: BASE_URL,

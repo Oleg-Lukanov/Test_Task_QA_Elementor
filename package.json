@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky",
     "postinstall": "playwright install chromium firefox",
     "test": "playwright test",
     "test:chromium": "playwright test --project=chromium",
@@ -12,10 +13,24 @@
     "test:docker": "docker compose run --rm playwright",
     "test:docker:update-snapshots": "docker compose run --rm playwright sh -c 'npm ci --ignore-scripts && npx playwright test --update-snapshots --project=chromium --project=firefox'",
     "test:ui": "playwright test --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "report": "playwright show-report",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
     "allure:serve": "allure serve allure-results"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",
@@ -30,12 +45,19 @@
   },
   "homepage": "https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@faker-js/faker": "^9.8.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.3",
     "allure-commandline": "^2.34.0",
     "allure-playwright": "^3.5.0",
     "dotenv": "^17.3.1",
-    "typescript": "^5.9.3"
+    "eslint": "^10.0.2",
+    "eslint-plugin-playwright": "^2.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
   }
 }
