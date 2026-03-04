@@ -8,9 +8,11 @@ on:
         required: false
         default: 'all'
 
-# Required for peaceiris/actions-gh-pages to push to gh-pages branch
+# contents: write  — needed by peaceiris/actions-gh-pages to push to gh-pages
+# checks: write    — needed by dorny/test-reporter to post inline JUnit summary
 permissions:
   contents: write
+  checks: write
 
 jobs:
   test:
@@ -29,10 +31,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # --ignore-scripts skips postinstall so we control browser install below
+        run: npm ci --ignore-scripts
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run Playwright tests
         env:
@@ -44,6 +47,16 @@ jobs:
           else
             npx playwright test --project="${{ github.event.inputs.browser }}"
           fi
+
+      # ── JUnit inline pass/fail summary in Actions run ─────────────────────
+      - name: Upload test results (JUnit XML)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Playwright Test Results
+          path: test-results/junit.xml
+          reporter: java-junit
+          fail-on-error: false
 
       # ── Restore previous Allure history (enables trend charts) ────────────
       - name: Fetch Allure history from gh-pages

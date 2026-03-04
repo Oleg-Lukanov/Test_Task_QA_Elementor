@@ -1,12 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { faker } from '@faker-js/faker';
 import { test, expect } from '../fixtures/base.fixture';
-
-const FORM_DATA = {
-  name: 'Jane Doe',
-  email: 'jane.doe@example.com',
-  message: 'Hello from automated Playwright tests!',
-};
 
 const AJAX_GLOB = '**/admin-ajax.php';
 
@@ -19,11 +14,9 @@ test.describe('Contact Form – Happy Path', () => {
     page,
     contactFormPage,
   }) => {
-    await contactFormPage.fillForm(
-      FORM_DATA.name,
-      FORM_DATA.email,
-      FORM_DATA.message,
-    );
+    await contactFormPage.fillName(faker.person.fullName());
+    await contactFormPage.fillEmail(faker.internet.email());
+    await contactFormPage.fillMessage(faker.lorem.sentence());
 
     // Capture the AJAX response while clicking submit
     const [response] = await Promise.all([
@@ -50,7 +43,7 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
   test('shows an error notification when the server returns 500', async ({
     page,
     contactFormPage,
-  }) => {
+  }, testInfo) => {
     // Intercept and mock the AJAX endpoint before submission
     await page.route(AJAX_GLOB, route =>
       route.fulfill({
@@ -60,23 +53,27 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
       }),
     );
 
-    await contactFormPage.fillForm(
-      FORM_DATA.name,
-      FORM_DATA.email,
-      FORM_DATA.message,
-    );
+    await contactFormPage.fillName(faker.person.fullName());
+    await contactFormPage.fillEmail(faker.internet.email());
+    await contactFormPage.fillMessage(faker.lorem.sentence());
 
     await contactFormPage.submit();
 
     // Wait for Elementor to render the error state
     await expect(contactFormPage.errorMessage).toBeVisible();
 
-    // ── Screenshot ─────────────────────────────────────────────────────────
+    // ── Screenshot — attached to Playwright HTML report & Allure report ────
     const screenshotsDir = path.resolve(__dirname, '..', 'screenshots');
     fs.mkdirSync(screenshotsDir, { recursive: true });
-    await page.screenshot({
+
+    const screenshotBuffer = await page.screenshot({
       path: path.join(screenshotsDir, 'error-500.png'),
       fullPage: true,
+    });
+
+    await testInfo.attach('error-500-screenshot', {
+      body: screenshotBuffer,
+      contentType: 'image/png',
     });
 
     // ── UI assertion ───────────────────────────────────────────────────────

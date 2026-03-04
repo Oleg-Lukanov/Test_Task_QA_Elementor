@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "playwright install chromium firefox webkit",
     "test": "playwright test",
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/Oleg-Lukanov/Test_Task_QA_Elementor#readme",
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.3",
     "allure-commandline": "^2.34.0",

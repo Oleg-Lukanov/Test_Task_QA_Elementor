@@ -16,6 +16,7 @@ export default defineConfig({
     ['list'],
     ['html', { open: 'never' }],
     ['allure-playwright'],
+    ['junit', { outputFile: 'test-results/junit.xml' }],
     ...(process.env.CI ? [['github'] as ['github']] : []),
   ],
 
