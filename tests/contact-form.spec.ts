@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { test, expect } from '../fixtures/base.fixture';
-import { AJAX_GLOB } from '../constants';
-import type { FormFields } from '../types';
+import { test, expect } from '../src/fixtures/base.fixture';
+import { AJAX_GLOB } from '../src/constants';
+import { STATUS_CODES } from '../src/types';
+import type { ContactFormFields } from '../src/types';
 
 // ---------------------------------------------------------------------------
 // Scenario 1 – Happy Path (real network request)
@@ -16,7 +17,7 @@ test.describe('Contact Form – Happy Path', () => {
     page,
     contactFormPage,
   }) => {
-    const formData: FormFields = {
+    const formData: ContactFormFields = {
       name: faker.person.fullName(),
       email: faker.internet.email(),
       message: faker.lorem.sentence(),
@@ -30,8 +31,8 @@ test.describe('Contact Form – Happy Path', () => {
       contactFormPage.submit(),
     ]);
 
-    // ── Network assertion ──────────────────────────────────────────────────
-    expect(response.status()).toBe(200);
+    // ── Network assertion ──────────────────────────────────────────────────────
+    expect(response.status()).toBe(STATUS_CODES.OK);
 
     // ── UI assertion ───────────────────────────────────────────────────────
     await expect(contactFormPage.successMessage).toBeVisible();
@@ -54,9 +55,12 @@ test.describe('Contact Form – Network Error (Mocked 500)', () => {
     contactFormPage,
     ajaxMock,
   }, testInfo) => {
-    await ajaxMock.mockServerError(500);
+    await ajaxMock.mockResponse({
+      body:   { success: false },
+      status: STATUS_CODES.INTERNAL_SERVER_ERROR,
+    });
 
-    const formData: FormFields = {
+    const formData: ContactFormFields = {
       name: faker.person.fullName(),
       email: faker.internet.email(),
       message: faker.lorem.sentence(),
