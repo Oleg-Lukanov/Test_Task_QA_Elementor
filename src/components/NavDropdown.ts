@@ -12,10 +12,10 @@ export class NavDropdown implements IDropdown {
   }
 
   async open(): Promise<void> {
-    if (!(await this.isOpen())) await this.toggleButton.click();
+    if (!(await this.isOpen())) await this.root.hover();
   }
 
   async close(): Promise<void> {
-    if (await this.isOpen()) await this.toggleButton.click();
+    if (await this.isOpen()) await this.root.page().mouse.move(0, 0);
   }
 }

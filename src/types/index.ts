@@ -9,6 +9,12 @@ export interface IDropdown {
   close(): Promise<void>;
 }
 
+export interface IMenu {
+  readonly root: Locator;
+  readonly textDropdown: IDropdown;
+  readonly imageDropdown: IDropdown;
+}
+
 export interface ContactFormFields {
   name: string;
   email: string;
