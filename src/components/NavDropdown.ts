@@ -1,6 +1,7 @@
 import { type Locator } from '@playwright/test';
+import { type IDropdown } from '../types';
 
-export class NavDropdown {
+export class NavDropdown implements IDropdown {
   readonly toggleButton: Locator = this.root.locator('button[aria-haspopup="true"]');
   readonly panel: Locator = this.root.locator('.e-n-menu-content');
 

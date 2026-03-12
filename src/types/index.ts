@@ -1,3 +1,14 @@
+import { type Locator } from '@playwright/test';
+
+export interface IDropdown {
+  readonly root: Locator;
+  readonly toggleButton: Locator;
+  readonly panel: Locator;
+  isOpen(): Promise<boolean>;
+  open(): Promise<void>;
+  close(): Promise<void>;
+}
+
 export interface ContactFormFields {
   name: string;
   email: string;
