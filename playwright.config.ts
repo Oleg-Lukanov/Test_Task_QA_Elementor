@@ -8,7 +8,6 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 10_000 },
 
-  /* Retry on CI, run serially on local to avoid hammering the remote host */
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : 1,
 
@@ -20,9 +19,6 @@ export default defineConfig({
     ...(process.env.CI ? [['github'] as ['github']] : []),
   ],
 
-  // Remove {platform} from the snapshot path so the same baseline PNG is used
-  // on both macOS (local) and Linux (CI).  The browser engine renders HTML/CSS
-  // identically across platforms, so cross-OS pixel drift is negligible.
   snapshotPathTemplate:
     '{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
 

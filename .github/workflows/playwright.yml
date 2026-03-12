@@ -8,8 +8,6 @@ on:
         required: false
         default: 'all'
 
-# contents: write  — needed by peaceiris/actions-gh-pages to push to gh-pages
-# checks: write    — needed by dorny/test-reporter to post inline JUnit summary
 permissions:
   contents: write
   checks: write
@@ -31,21 +29,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        # --ignore-scripts skips postinstall so we control browser install below
         run: npm ci --ignore-scripts
 
-      # Pre-create allure-results/ as the runner user BEFORE Docker runs.
-      # Docker (root) can still write inside it, but the directory itself stays
-      # runner-owned so later host-side mkdir/cp steps succeed without errors.
       - name: Pre-create allure-results directory
         run: mkdir -p allure-results
 
-      # ── Run tests inside the official Playwright Docker image ─────────────
-      # Using docker run (not container: on the job) so that all other steps
-      # — allure generate, peaceiris/actions-gh-pages — run on the host runner
-      # without Docker-in-Docker issues.
-      # --user $(id -u):$(id -g) makes the container write files as the runner
-      # UID so all output directories remain runner-owned.
       - name: Run Playwright tests (Docker)
         env:
           BASE_URL: ${{ vars.BASE_URL || 'https://wtfqsbkm.elementor.cloud' }}
@@ -66,7 +54,6 @@ jobs:
             mcr.microsoft.com/playwright:v1.58.2-noble \
             sh -c "npm ci --ignore-scripts && npx playwright test ${PROJECTS}"
 
-      # ── JUnit inline pass/fail summary in Actions run ─────────────────────
       - name: Upload test results (JUnit XML)
         if: always()
         uses: dorny/test-reporter@v1
@@ -76,14 +63,13 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-      # ── Restore previous Allure history (enables trend charts) ────────────
       - name: Fetch Allure history from gh-pages
         if: always()
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages-history
-        continue-on-error: true # gh-pages branch won't exist on the first run
+        continue-on-error: true
 
       - name: Copy history into allure-results
         if: always()
@@ -96,12 +82,10 @@ jobs:
             echo "No previous history found — first run, skipping."
           fi
 
-      # ── Generate Allure HTML report ───────────────────────────────────────
       - name: Generate Allure HTML report
         if: always()
         run: npx allure generate allure-results --clean -o allure-report
 
-      # ── Artifacts ─────────────────────────────────────────────────────────
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,7 +111,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      # ── Publish Allure report to GitHub Pages ─────────────────────────────
       - name: Deploy Allure report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4

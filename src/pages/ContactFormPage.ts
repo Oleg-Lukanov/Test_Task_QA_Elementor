@@ -1,8 +1,16 @@
 import { type Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { NavDropdown } from '../components';
 import type { ContactFormFields } from '../types';
 
 export class ContactFormPage extends BasePage {
+  readonly dropdownAndLink = new NavDropdown(
+    this.page.locator('.e-n-menu-item').filter({ hasText: 'Dropdown and Link' }),
+  );
+  readonly dropdown = new NavDropdown(
+    this.page.locator('.e-n-menu-item').filter({ hasText: 'Dropdown' }).last(),
+  );
+
   readonly nameField: Locator = this.page.locator('#form-field-name');
   readonly emailField: Locator = this.page.locator('#form-field-email');
   readonly messageField: Locator = this.page.locator('#form-field-message');
