@@ -29,10 +29,14 @@ written with **Playwright** and **TypeScript**.
 │   ├── constants/
 │   │   └── index.ts              # Shared string constants (AJAX_GLOB, SCREENSHOTS_DIR)
 │   ├── types/
-│   │   └── index.ts              # Shared TS types (ContactFormFields, STATUS_CODES)
+│   │   └── index.ts              # Interfaces (IDropdown, IMenu, ContactFormFields) + STATUS_CODES
+│   ├── components/
+│   │   ├── NavDropdown.ts        # Hover-based dropdown component (implements IDropdown)
+│   │   ├── NavMenu.ts            # Nav menu with textDropdown + imageDropdown (implements IMenu)
+│   │   └── index.ts              # Barrel export
 │   ├── pages/
 │   │   ├── BasePage.ts           # Abstract base class: takeScreenshot, takeSnapshot
-│   │   └── ContactFormPage.ts    # Page Object Model for the contact form
+│   │   └── ContactFormPage.ts    # Page Object with greenMenu + redMenu (NavMenu) composed in
 │   ├── mocks/
 │   │   └── AjaxMock.ts           # Network interception helper (mockResponse<T>)
 │   ├── fixtures/
