@@ -1,14 +1,14 @@
 import { type Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { NavMenu } from '../components';
+import { DropdownModal } from '../components';
 import type { ContactFormFields } from '../types';
 
 export class ContactFormPage extends BasePage {
-  readonly greenMenu = new NavMenu(
-    this.page.locator('.elementor-widget-n-menu').first(),
+  readonly greenDropdown = new DropdownModal(
+    this.page.locator('li:has(#e-n-menu-title-1941)'),
   );
-  readonly redMenu = new NavMenu(
-    this.page.locator('.elementor-widget-n-menu').last(),
+  readonly redDropdown = new DropdownModal(
+    this.page.locator('li:has(#e-n-menu-title-2391)'),
   );
 
   readonly nameField: Locator = this.page.locator('#form-field-name');

@@ -2,17 +2,11 @@ import { type Locator } from '@playwright/test';
 
 export interface IDropdown {
   readonly root: Locator;
-  readonly toggleButton: Locator;
+  readonly trigger: Locator;
   readonly panel: Locator;
   isOpen(): Promise<boolean>;
   open(): Promise<void>;
   close(): Promise<void>;
-}
-
-export interface IMenu {
-  readonly root: Locator;
-  readonly textDropdown: IDropdown;
-  readonly imageDropdown: IDropdown;
 }
 
 export interface ContactFormFields {

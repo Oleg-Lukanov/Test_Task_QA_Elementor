@@ -1,18 +1,17 @@
 import { type Locator } from '@playwright/test';
 import { type IDropdown } from '../types';
+import { BaseComponent } from './BaseComponent';
 
-export class NavDropdown implements IDropdown {
-  readonly toggleButton: Locator = this.root.locator('button[aria-haspopup="true"]');
+export class DropdownModal extends BaseComponent implements IDropdown {
+  readonly trigger: Locator = this.root.locator('.e-n-menu-title');
   readonly panel: Locator = this.root.locator('.e-n-menu-content');
 
-  constructor(readonly root: Locator) {}
-
   async isOpen(): Promise<boolean> {
-    return (await this.toggleButton.getAttribute('aria-expanded')) === 'true';
+    return this.panel.isVisible();
   }
 
   async open(): Promise<void> {
-    if (!(await this.isOpen())) await this.root.hover();
+    if (!(await this.isOpen())) await this.trigger.hover();
   }
 
   async close(): Promise<void> {

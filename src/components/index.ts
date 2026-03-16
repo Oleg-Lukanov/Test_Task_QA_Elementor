@@ -1,2 +1,2 @@
-export { NavDropdown } from './NavDropdown';
-export { NavMenu } from './NavMenu';
+export { BaseComponent } from './BaseComponent';
+export { DropdownModal } from './DropdownModal';
